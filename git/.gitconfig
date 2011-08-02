@@ -1,6 +1,9 @@
+# Description: Global Git config file
+# Location: ~/.gitconfig
+
 [user]
 	name = <firstname> <lastname>
-	email = <email>
+	email = <email@example.com>
 
 [color]
 	diff = auto
