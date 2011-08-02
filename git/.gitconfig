@@ -1,0 +1,23 @@
+[user]
+	name = <firstname> <lastname>
+	email = <email>
+
+[color]
+	diff = auto
+	interactive = auto
+	ui = true
+	status = auto
+	branch = auto
+
+[core]
+	pager = less -FRSX
+	editor = vim
+	autocrlf = input
+	safecrlf = true
+	excludesfile = /home/<username>/.gitignore
+
+[merge]
+	tool = vimdiff
+
+[alias]
+    refresh = !git diff --cached --name-only | xargs git add
