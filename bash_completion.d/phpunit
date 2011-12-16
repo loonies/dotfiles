@@ -1,0 +1,38 @@
+# Description: bash completion for PHPUnit
+# Location: /etc/bash_completion.d/phpunit
+
+_phpunit()
+{
+	local cur prev opts
+
+	COMPREPLY=()
+
+	# Current and previous characters
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD - 1]}"
+
+	# Available options
+	opts='--log-junit --log-tap --log-json \
+		--coverage-clover --coverage-html --coverage-php --coverage-text \
+		--testdox-html --testdox-text \
+		--filter --group --exclude-group --list-groups \
+		--loader --printer --repeat \
+		--tap --testdox \
+		--color --stderr --strict -v --verbose \
+		--stop-on-error --stop-on-failure --stop-on-skipped --stop-on-incomplete \
+		--skeleton-class --skeleton-test \
+		--process-isolation --no-globals-backup --static-backup \
+		--bootstrap -c --configuration --no-configuration --include-path -d \
+		-h --help --version \
+		--debug'
+
+	# Generate reply list if an options starts with a dash (-)
+	if [[ ${cur} == -* ]]; then
+		COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
+
+		return 0
+	fi
+}
+
+# Init
+complete -F _phpunit phpunit
