@@ -1,3 +1,6 @@
+# Description: Global gitignore file
+# Location: ~/.gitignore
+
 /.project
 /.settings
 /.buildpath
