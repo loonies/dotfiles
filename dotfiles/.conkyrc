@@ -1,0 +1,90 @@
+# Description: Conky configuration file
+# Location: ~/.conkyrc
+
+
+#---------------------------------------------
+# VIDEO SETTINGS
+#---------------------------------------------
+
+double_buffer yes
+own_window yes
+own_window_type normal
+own_window_transparent yes
+# own_window_colour
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+
+xftalpha 0.1
+
+
+#---------------------------------------------
+# POSITION
+#---------------------------------------------
+
+minimum_size 500 5
+maximum_width 650
+alignment top_right
+gap_x 10
+gap_y 40
+
+
+#---------------------------------------------
+# CONFIG
+#---------------------------------------------
+
+# Fork to background
+background yes
+
+# Total number of times for Conky to update before quitting
+total_run_times 0
+
+# Update interval
+update_interval 1
+
+# Substract (file system) buffers from used memory
+no_buffers yes
+
+cpu_avg_samples 1
+net_avg_samples 2
+
+override_utf8_locale yes
+use_spacer none
+
+
+#---------------------------------------------
+# STYLE
+#---------------------------------------------
+
+# Font type and size
+xftfont Bitstream Vera Sans Mono:size=7
+
+# Font transparency
+xftalpha 0.8
+
+# Use anti-aliased font
+use_xft yes
+
+draw_shades no
+draw_outline no
+draw_borders no
+draw_graph_borders no
+
+stippled_borders 0
+border_margin 0
+border_width 0
+
+default_color white
+default_shade_color black
+default_outline_color black
+
+uppercase no
+
+
+#---------------------------------------------
+# TEXT
+#---------------------------------------------
+
+TEXT
+
+${goto 100}${voffset -2}${font Sans:bold:size=8}${color}Load: ${color #DDAA00}${cpu cpu0}% ${goto 168}${color}Mem: ${color #DDAA00}${memperc}% ${goto 238}${color}Swap: ${color #DDAA00}${swapperc}% ${goto 308}${color}Dn: ${color #DDAA00}${tcp_portmon 1 32767 count} ${color lightgrey}(${color #DDAA00}${downspeedf eth0} k/s${color lightgrey}) ${goto 410}${color}Up: ${color #DDAA00}${tcp_portmon 32768 61000 count} ${color lightgrey}(${color #DDAA00}${upspeedf eth0} k/s${color lightgrey})
+${offset 0}${color lightgrey}${hr 1}
+${alignr}${color #DDAA00}[$mpd_status] ${color}$mpd_artist - $mpd_title ${color lightgrey}(${color #DDAA00}$mpd_elapsed/$mpd_length ${color lightgrey}@ ${color #DDAA00}${mpd_bitrate}k${color lightgrey})
