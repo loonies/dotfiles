@@ -27,4 +27,4 @@
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 	tree = log --all --graph --format='%C(green)%h%Creset %C(yellow)%an%Creset %C(blue bold)%ad%Creset %s%C(red bold)%d' --date=relative --abbrev-commit --decorate
 	dc = diff --cached
-	st = status
+	st = status -sb
