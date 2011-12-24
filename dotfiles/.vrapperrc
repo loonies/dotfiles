@@ -1,0 +1,6 @@
+set autoindent
+set ignorecase
+set hlsearch
+set incsearch
+set number
+set scrolloff=5
