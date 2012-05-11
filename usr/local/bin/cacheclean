@@ -3,10 +3,10 @@
 # Description: Arch Linux package cache clean script
 # Location: /usr/local/bin/cacheclean
 
-"""cache_clean - a simple python script to clean up the /var/cache/pacman/pkg directory.
+"""cacheclean - a simple python script to clean up the /var/cache/pacman/pkg directory.
 More versatile than 'pacman -Sc' in that you can select how many old versions
 to keep.
-Usage: cache_clean {-p} {-v} <# of copies to keep>
+Usage: cacheclean {-p} {-v} <# of copies to keep>
 	# of copies to keep - (required) how many generations of each package to keep
 	-p - (optional) preview what would be deleted; forces verbose (-v) mode.
 	-v - (optional) show deleted packages."""
