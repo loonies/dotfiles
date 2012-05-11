@@ -26,9 +26,17 @@ _phpunit()
 		-h --help --version \
 		--debug'
 
-	# Generate reply list if an options starts with a dash (-)
+	# Filename completion fix
+	_compopt_o_filenames
+
 	if [[ ${cur} == -* ]]; then
+		# Completion list for options
 		COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
+
+		return 0
+	else
+		# Completion list for directories and files
+		COMPREPLY=($(compgen -f ${cur}))
 
 		return 0
 	fi
