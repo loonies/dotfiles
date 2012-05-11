@@ -1,0 +1,27 @@
+# Description: xbindkeys configuration file
+# Location: ~/.xbindkeysrc
+
+# key: 1 multimedia - MPD previous
+"mpc prev"
+	m:0x10 + c:192
+	Mod2 + XF86Launch5
+
+# key: 2 multimedia - MPD play/pause
+"mpc seek -00:00:05"
+	m:0x10 + c:193
+	Mod2 + XF86Launch6
+
+# key: 3 multimedia - MPD pause
+"mpc stop"
+	m:0x10 + c:194
+	Mod2 + XF86Launch7
+
+# key: 4 multimedia - MPD stop
+"mpc seek +00:00:05"
+	m:0x10 + c:195
+	Mod2 + XF86Launch8
+
+# key: 5 multimedia - MPD next
+"mpc next"
+	m:0x10 + c:196
+	Mod2 + XF86Launch9
