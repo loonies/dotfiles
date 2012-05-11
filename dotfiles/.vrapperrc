@@ -1,3 +1,6 @@
+" Description: Vrapper configuration file
+" Location: ~/.vrapperrc
+
 set autoindent
 set ignorecase
 set hlsearch
