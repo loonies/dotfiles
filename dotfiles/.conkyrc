@@ -85,6 +85,6 @@ uppercase no
 
 TEXT
 
-${goto 78}${voffset -2}${font Sans:bold:size=8}${color}Load: ${color #DDAA00}${cpu cpu0}% ${goto 148}${color}Mem: ${color #DDAA00}${memperc}% ${goto 218}${color}Swap: ${color #DDAA00}${swapperc}% ${goto 288}${color}Dn: ${color #DDAA00}${tcp_portmon 1 32767 count} ${color lightgrey}(${color #DDAA00}${downspeedf eth0} k/s${color lightgrey}) ${goto 400}${color}Up: ${color #DDAA00}${tcp_portmon 32768 61000 count} ${color lightgrey}(${color #DDAA00}${upspeedf eth0} k/s${color lightgrey})
+${goto 70}${voffset -2}${font Sans:bold:size=8}${color}Load: ${color #DDAA00}${cpu cpu0}% ${goto 148}${color}Mem: ${color #DDAA00}${memperc}% ${goto 218}${color}Swap: ${color #DDAA00}${swapperc}% ${goto 288}${color}Dn: ${color #DDAA00}${tcp_portmon 1 32767 count} ${color lightgrey}(${color #DDAA00}${downspeedf eth0} k/s${color lightgrey}) ${goto 400}${color}Up: ${color #DDAA00}${tcp_portmon 32768 61000 count} ${color lightgrey}(${color #DDAA00}${upspeedf eth0} k/s${color lightgrey})
 ${offset 0}${color lightgrey}${hr 1}
-${if_running mpdas}${alignr}${color #DDAA00}[Scrobbling] ${endif}${alignr}${color #DDAA00}[$mpd_status] ${color}$mpd_artist - $mpd_title ${color lightgrey}(${color #DDAA00}$mpd_elapsed/$mpd_length ${color lightgrey}@ ${color #DDAA00}${mpd_bitrate}k${color lightgrey})
+${if_running mpdas}${alignr}${color #DDAA00}[Scrobbling] ${endif}${alignr}[$mpd_status] ${color}$mpd_artist - $mpd_title ${color lightgrey}(${color #DDAA00}$mpd_elapsed/$mpd_length ${color lightgrey}@ ${color #DDAA00}${mpd_bitrate}k${color lightgrey})
