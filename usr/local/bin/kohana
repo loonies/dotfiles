@@ -1,0 +1,416 @@
+#!/bin/bash
+
+# Description: Kohana project installer
+# Location: /usr/local/bin/kohana
+
+### General configuration ##################################
+
+CONFIG="$HOME/.kohana.conf"
+
+# Default configuration options
+BRANCH="3.2/master"
+GITHUB="https://github.com"
+RAWGITHUB="https://raw.github.com"
+PROJECT_ROOT="$HOME/projects/"
+PROJECT_DIRS=("documents" "htdocs" "repo" "resources" "workspace")
+SKEL_REPO="loonies/kohana-project-skeleton"
+
+
+# Load local configuration (overwrite default options)
+[ -f $CONFIG ] && . $CONFIG
+
+
+# Flags, constants, helper variables
+VERSION="0.1"
+LOG_CACHE=""
+OPERATION=""
+CMD_OPTIONS=""
+MODULE_NAME=""
+MODULE_PATH=""
+DRY_RUN=0
+VERBOSE=0
+
+# Exit error codes
+ERROR_USAGE=2
+ERROR_MISSING_ARGUMENTS=3
+ERROR_GIT=4
+ERROR_CURL=5
+
+
+
+### Functions ##############################################
+
+# Short help
+print_usage() {
+	echo 'Usage: kohana [options] <operation> [targets]'
+	echo 'Try `kohana --help` for more information.'
+	exit $ERROR_USAGE
+}
+
+# Long help
+print_usage_long() {
+less -FRSX << EOF
+NAME
+	kohana - Kohana project installer
+
+SYNOPSIS
+	kohana config
+	kohana [-v | --verbose] [-D | --dry-run] skeleton
+	kohana [-v | --verbose] [-D | --dry-run] init
+	kohana [-v | --verbose] [-D | --dry-run] [-b | --branch <branch>] install <module> <path>
+	kohana [-v | --verbose] [-D | --dry-run] [-b | --branch <branch>] upgrade <path>
+
+DESCRIPTION
+	Kohana project installer
+
+OPERATIONS
+	config
+		Shows configuration options
+
+	skeleton
+		Creates project skeleton
+
+	init
+		Install Kohana application files
+
+	install
+		Install Kohana files
+
+	upgrade
+		Upgrades Kohana installation
+
+OPTIONS
+	-b, --branch	Specify the branch to use
+	-D, --dry-run	Only print what would be done
+	-h, --help	Print this help
+	-v, --verbose	Verbose output
+	--version	Print current installer version
+
+EXAMPLES
+	kohana init
+	kohana install kohana/core system
+
+VERSION
+	$VERSION
+EOF
+exit 0
+}
+
+# Simple log function
+write_log() {
+	if [ $VERBOSE -eq 1 ]; then
+		echo $1
+	else
+		if [ -n "$LOG_CACHE" ]; then
+			LOG_CACHE="$LOG_CACHE\n$1"
+		else
+			LOG_CACHE=$1
+		fi
+	fi
+}
+
+# Simple error printer
+print_error_and_die() {
+	if [ $VERBOSE -eq 0 ]; then
+		echo "fatal: $1"
+	else
+		write_log "fatal: $1"
+	fi
+
+	exit $2
+}
+
+# Checks if last comand was successful
+check_exit_status() {
+	if [ $? -ne 0 ]; then
+		print_error_and_die "$1. Exiting..." $2
+	fi
+}
+
+# Checks if git initialized
+check_git_repo() {
+	[ ! -d ".git" ] && print_error_and_die "Not a Git project? Exiting..." $ERROR_GIT
+}
+
+# Initialize git directory
+init_git() {
+	write_log "Initializing git repository"
+
+	if [ $DRY_RUN -eq 0 ]; then
+		git init > /dev/null 2>&1
+		check_exit_status "Could not initialize git" $ERROR_GIT
+	fi
+}
+
+# Make a git commit
+commit() {
+	[ -z "$1" ] && print_error_and_die "Must provide a commit message" $ERROR_MISSING_ARGUMENTS
+
+	write_log "Committing: $1"
+
+	if [ $DRY_RUN -eq 0 ]; then
+		git commit -m "$1" > /dev/null 2>&1
+		check_exit_status "Commit failed" $ERROR_GIT
+	fi
+}
+
+# Normalize module_path
+normalize_module_path() {
+	$MODULE_PATH=`echo "${MODULE_PATH}" | sed 's#/*$##'`
+}
+
+
+
+### Operations #############################################
+
+# Shows configuration option
+operation_config() {
+	echo "      BRANCH: $BRANCH"
+	echo "      GITHUB: $GITHUB"
+	echo "   RAWGITHUB: $RAWGITHUB"
+	echo "PROJECT_ROOT: $PROJECT_ROOT"
+	echo "PROJECT_DIRS: ${PROJECT_DIRS[@]}"
+	echo "   SKEL_REPO: $SKEL_REPO"
+}
+
+# Create project skeleton
+operation_skeleton() {
+	echo "Creating project sceleton"
+
+	echo -n "Enter the project directory name: "
+	read project
+
+	if [ $DRY_RUN -eq 0 ]; then
+		for dir in "${PROJECT_DIRS[@]}"; do
+			mkdir -p $CMD_OPTIONS "${PROJECT_ROOT}${project}/${dir}"
+		done
+	fi
+}
+
+# Initialize application
+operation_init() {
+	[ -d "application" ] || [ -f "index.php" ] && print_error_and_die "Application already initialized? Exiting..." $ERROR_GIT
+
+	init_git;
+
+	write_log "Creating application directories"
+
+	if [ $DRY_RUN -eq 0 ]; then
+		# Controllers and models
+		mkdir -p $CMD_OPTIONS application/classes/{controller,model,view}
+		mkdir -p $CMD_OPTIONS application/{config,i18n,messages,templates}
+		mkdir -p $CMD_OPTIONS application/tests/provider
+		mkdir -p $CMD_OPTIONS application/tests/datasets
+
+		# Cache and logs must be writable
+		mkdir -m 0777 -p $CMD_OPTIONS application/var/cache/system
+		mkdir -m 0777 -p $CMD_OPTIONS application/var/logs/system
+
+		# Ignore log and cache files
+		echo '[^.]*' > application/var/cache/system/.gitignore
+		echo '[^.]*' > application/var/logs/system/.gitignore
+	fi
+
+	write_log "Downloading application files"
+
+	if [ $DRY_RUN -eq 0 ]; then
+		# Get index.php
+		curl $CMD_OPTIONS --location --output index.php "$RAWGITHUB/$SKEL_REPO/$BRANCH/index.php" > /dev/null 2>&1
+		check_exit_status "Failed to create application: index.php" $ERROR_CURL
+
+		# Get phpunit.php
+		curl $CMD_OPTIONS --location --output phpunit.php "$RAWGITHUB/$SKEL_REPO/$BRANCH/phpunit.php" > /dev/null 2>&1
+		check_exit_status "Failed to create application: phpunit.php" $ERROR_CURL
+
+		# Get phpunit.xml
+		curl $CMD_OPTIONS --location --output phpunit.xml "$RAWGITHUB/$SKEL_REPO/$BRANCH/phpunit.xml" > /dev/null 2>&1
+		check_exit_status "Failed to create application: phpunit.xml" $ERROR_CURL
+
+		# Get bootstrap.php
+		curl $CMD_OPTIONS --location --output application/bootstrap.php "$RAWGITHUB/$SKEL_REPO/$BRANCH/application/bootstrap.php" > /dev/null 2>&1
+		check_exit_status "Failed to create a file: application/bootstrap.php" $ERROR_CURL
+
+		# Get routes.php
+		curl $CMD_OPTIONS --location --output application/routes.php "$RAWGITHUB/$SKEL_REPO/$BRANCH/application/routes.php" > /dev/null 2>&1
+		check_exit_status "Failed to create a file: application/routes.php" $ERROR_CURL
+
+		# Get .htaccess
+		curl $CMD_OPTIONS --location --output .htaccess "$RAWGITHUB/$SKEL_REPO/$BRANCH/.htaccess" > /dev/null 2>&1
+		check_exit_status "Failed to create a file: .htaccess" $ERROR_CURL
+
+		# Stage skeleton
+		git add .htaccess index.php application > /dev/null 2>&1
+		check_exit_status "Failed to stage application files" $ERROR_GIT
+	fi
+
+	commit "Application initialized"
+}
+
+# Install module
+operation_install() {
+	write_log "Installing submodule $MODULE_NAME to $MODULE_PATH"
+
+	check_git_repo
+
+	[ -z $MODULE_NAME ] && print_error_and_die "Too few arguments for install operation <module>" $ERROR_MISSING_ARGUMENTS
+	[ -z $MODULE_PATH ] && print_error_and_die "Too few arguments for install operation <path>" $ERROR_MISSING_ARGUMENTS
+
+	write_log "Using branch $BRANCH"
+
+	status=$(curl --silent --head --write-out "%{http_code}" $GITHUB/$MODULE_NAME/tree/$BRANCH | tail -n 1)
+
+	if [ $status != 200 -a $status != 301 ]; then
+		print_error_and_die "Branch $BRANCH of $MODULE_NAME does not exist" $ERROR_USAGE
+	fi
+
+	if [ $DRY_RUN -eq 0 ] && [ -n "$BRANCH" ]; then
+		write_log "Adding module $MODULE_NAME"
+		git submodule add -b $BRANCH "$GITHUB/$MODULE_NAME.git" "$MODULE_PATH" > /dev/null 2>&1
+		check_exit_status "Failed to install module $MODULE_NAME" $ERROR_GIT
+
+		write_log "Initializing module $MODULE_NAME"
+		git submodule update --init --recursive > /dev/null 2>&1
+		check_exit_status "Failed to initialize module $MODULE_NAME" $ERROR_GIT
+
+		commit "Installed the $MODULE_NAME module"
+	fi
+}
+
+# Upgrade module
+operation_upgrade() {
+	write_log "Upgrading module in $MODULE_PATH using $BRANCH"
+
+	check_git_repo
+
+	[ -z $MODULE_PATH ] && print_error_and_die "Too few arguments for install operation <path>" $ERROR_MISSING_ARGUMENTS
+
+	start_dir=`pwd`
+
+	write_log "Entering module path $MODULE_PATH"
+	cd $MODULE_PATH
+
+	write_log "Verifying module branch $BRANCH"
+	git show-ref --verify --quiet "refs/heads/$BRANCH"
+
+	if [ $? != 0 ]; then
+		cd $start_dir
+		print_error_and_die "Branch $BRANCH of module in $MODULE_PATH does not exist" $ERROR_USAGE
+	fi
+
+	if [ $DRY_RUN -eq 0 ] && [ -n "$BRANCH" ]; then
+		write_log "Switching to the branch $BRANCH"
+		git checkout -f $BRANCH > /dev/null 2>&1
+		check_exit_status "Failed switching to the $BRANCH branch" $ERROR_GIT
+
+		write_log "Getting the latest changes from $BRANCH"
+		git pull origin $BRANCH > /dev/null 2>&1
+		check_exit_status "Failed to upgrade module in $MODULE_PATH" $ERROR_GIT
+
+		write_log "Entering start directory"
+		cd $start_dir
+
+		write_log "Adding an upgraded module to be commited"
+		git add $MODULE_PATH
+		commit "Upgraded module in $MODULE_PATH"
+	fi
+}
+
+
+
+### Main ###################################################
+
+main() {
+	case $OPERATION in
+		config)
+			# Show confuguration options
+			operation_config
+			;;
+		init)
+			# Initialize project
+			operation_init
+			;;
+		install)
+			# Install module
+			operation_install
+			;;
+		skeleton)
+			# Create skeleton files
+			operation_skeleton
+			;;
+		upgrade)
+			# Upgrade module
+			operation_upgrade
+			;;
+	esac
+
+	exit 0
+}
+
+if [ $# -eq 0 ]; then
+	print_usage
+	exit 1
+fi
+
+
+while [ $# -gt 0 ]; do
+    case $1 in
+		config|skeleton|init|install|upgrade)
+			OPERATION=$1
+
+			case $OPERATION in
+				install)
+					MODULE_NAME=$2
+					MODULE_PATH=$3
+
+					normalize_module_path()
+
+					shift 2
+				;;
+				upgrade)
+					MODULE_PATH=$2
+
+					normalize_module_path()
+
+					shift
+				;;
+			esac
+			;;
+		-h|--h|--he|--hel|--help|help)
+			print_usage_long
+			exit 0
+			;;
+		-D|--dry-run)
+			DRY_RUN=1
+			write_log "Dry run, no actions will be taken"
+			;;
+		-v|--verbose)
+			VERBOSE=1
+			[ -n "$LOG_CACHE" ] && echo -e $LOG_CACHE
+			CMD_OPTIONS="-v"
+			;;
+		--version)
+			echo "Kohana project installer version $VERSION"
+			exit 0
+			;;
+		-b|--branch)
+			BRANCH=$2
+
+			shift
+			;;
+		(--)
+			shift
+			break
+			;;
+		(-*)
+			print_usage
+			exit 1
+			;;
+		(*)
+			break
+			;;
+    esac
+
+    shift
+done
+
+main
