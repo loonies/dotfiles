@@ -1,0 +1,69 @@
+# Description: Tint2 config file
+# Location: ~/.config/tint2/tint2rc
+
+#---------------------------------------------
+# BACKGROUND AND BORDER
+#---------------------------------------------
+rounded = 5
+border_width = 2
+background_color = #000000 60
+border_color = #000000 0
+
+rounded = 3
+border_width = 1
+background_color = #000000 65 # Light background
+# background_color = #FFFFFF 5 # Dark background
+border_color = #D1D1D1 20
+
+rounded = 3
+border_width = 1
+background_color = #000000 35
+border_color = #D1D1D1 40
+
+#---------------------------------------------
+# PANEL
+#---------------------------------------------
+panel_monitor = all
+panel_position = bottom center
+panel_size = 98% 28
+panel_margin = 0 4
+panel_padding = 2 2 4
+font_shadow = 0
+panel_background_id = 0
+wm_menu = 0
+
+#---------------------------------------------
+# TASKBAR
+#---------------------------------------------
+taskbar_mode = single_desktop
+taskbar_padding = 2 0 4
+taskbar_background_id = 0
+
+#---------------------------------------------
+# TASKS
+#---------------------------------------------
+task_icon = 1
+task_text = 1
+task_width = 180
+task_centered = 1
+task_padding = 2 4
+task_font = sans 7
+task_font_color = #FFFFFF 70
+task_active_font_color = #FFFFFF 85
+task_background_id = 3
+task_active_background_id = 2
+
+#---------------------------------------------
+# SYSTRAYBAR
+#---------------------------------------------
+systray = 1
+systray_padding = 2 2 6
+systray_background_id = 0
+
+#---------------------------------------------
+# MOUSE ACTION ON TASK
+#---------------------------------------------
+mouse_middle = close
+mouse_right = none
+mouse_scroll_up = toggle
+mouse_scroll_down = iconify
