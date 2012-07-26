@@ -362,14 +362,14 @@ while [ $# -gt 0 ]; do
 					MODULE_NAME=$2
 					MODULE_PATH=$3
 
-					normalize_module_path()
+					normalize_module_path
 
 					shift 2
 				;;
 				upgrade)
 					MODULE_PATH=$2
 
-					normalize_module_path()
+					normalize_module_path
 
 					shift
 				;;
