@@ -36,3 +36,4 @@
 	br = branch
 	ci = commit
 	cim = commit -m
+	amend = !git log -n 1 --pretty=tformat:%s%n%n%b | git commit -F - --amend
