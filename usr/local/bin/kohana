@@ -12,7 +12,7 @@ BRANCH="3.2/master"
 GITHUB="https://github.com"
 RAWGITHUB="https://raw.github.com"
 PROJECT_ROOT="$HOME/projects/"
-PROJECT_DIRS=("documents" "htdocs" "repo" "resources" "workspace")
+PROJECT_DIRS=("documents" "app" "repo" "resources" "workspace")
 SKEL_REPO="loonies/kohana-project-skeleton"
 
 
