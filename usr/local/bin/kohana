@@ -65,19 +65,19 @@ DESCRIPTION
 
 OPERATIONS
 	config
-		Shows configuration options
+		Shows configuration option values
 
 	skeleton
-		Creates project skeleton
+		Creates a project skeleton
 
 	init
 		Install Kohana application files
 
 	install
-		Install Kohana files
+		Install a module
 
 	upgrade
-		Upgrades Kohana installation
+		Upgrade a module
 
 OPTIONS
 	-b, --branch	Specify the branch to use
