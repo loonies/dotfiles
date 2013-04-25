@@ -1,0 +1,14 @@
+# Description: ack! config file
+# Location: ~/.ackrc
+
+# Always use color, even piping
+--color
+
+# Ignore case if PATTERN contains no upper case
+--smart-case
+
+# Pager
+--pager=less -r
+
+# Add mustache file support
+--type-add=html=.mustache
