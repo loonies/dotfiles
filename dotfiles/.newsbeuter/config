@@ -1,0 +1,39 @@
+# Description: Newsbeuter configuration file
+# Location: ~/.newsbeuter/config
+
+# Reloading
+refresh-on-startup yes
+auto-reload yes
+reload-time 30
+reload-threads 4
+reload-only-visible-feeds no
+show-read-feeds no
+download-retries 4
+
+# Notification
+notify-screen yes
+notify-xterm yes
+
+# Storage
+max-items 600
+#save-path "<path>"
+
+# External programs
+browser "links %u"
+
+# Display
+article-sort-order date-desc
+feedlist-format "%S%n %11u %-50t [%T]"
+articlelist-format "(%D) %f %?T?|%-17T| ?%t"
+datetime-format "%b %d"
+color background white black
+color listnormal white black
+color listfocus black white
+color info black white
+color article white black
+
+# Interface
+confirm-exit yes
+bind-key k up
+bind-key j down
+bind-key m toggle-article-read
