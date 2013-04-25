@@ -4,6 +4,9 @@
 # Check for an interactive session
 [ -z "$PS1" ] && return
 
+# Environment variables
+export EDITOR=vim
+
 # Aliases
 alias ls='ls --color=auto'
 
