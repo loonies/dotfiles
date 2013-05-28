@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Description: Transmission magnet links support
+# Location: /usr/local/bin/magnet
+
+/usr/bin/transmission-remote --add "$1"
