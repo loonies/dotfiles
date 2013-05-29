@@ -37,6 +37,7 @@ bind-key m toggle-article-read
 # define-filter <name> <filter>
 
 # Highlight
+search-highlight-colors white yellow bold
 highlight article "^(Feed|Title|Author|Link|Date):" cyan default bold
 highlight article "^Links?:" yellow default bold
 
