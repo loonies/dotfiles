@@ -22,6 +22,9 @@
 [merge]
 	tool = vimdiff
 
+[diff]
+	tool = vimdiff
+
 [url "git://github.com/"]
 	insteadOf = http://github.com/
 
