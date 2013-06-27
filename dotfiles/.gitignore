@@ -1,7 +1,8 @@
 # Description: Global gitignore file
 # Location: ~/.gitignore
 
-/.project
-/.settings
+/.ackrc
 /.buildpath
 /.git-ftp-ignore
+/.project
+/.settings
