@@ -10,5 +10,5 @@
 # Pager
 --pager=less -R
 
-# Add mustache file support
---type-add=html=.mustache
+# Add .mustache file support
+--type-add=html:ext:mustache
